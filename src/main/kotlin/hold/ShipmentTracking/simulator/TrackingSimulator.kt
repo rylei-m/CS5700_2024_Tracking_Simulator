@@ -47,4 +47,12 @@ object TrackingSimulator {
     private fun notifyObservers(shipment: Shipment) {
         observers.forEach { it(shipment) }
     }
+
+    fun processUpdate(update: String) {
+        // idk yet
+    }
+
+    fun getShipment(id: String): Shipment? {
+        return shipments[id]
+    }
 }
