@@ -1,3 +1,5 @@
+package hold.shipmentTracking.enums
+
 enum class UpdateType {
     CREATED,
     SHIPPED,
