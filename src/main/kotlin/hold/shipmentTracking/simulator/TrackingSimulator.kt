@@ -1,27 +1,28 @@
-import org.example.Shipment
+package org.example.hold.ShipmentTracking.simulator
 
-object TrackingSimulator {
+import hold.shipmentTracking.enums.UpdateType
+import hold.shipmentTracking.models.Shipment
+import hold.shipmentTracking.observer.Subject
+import hold.shipmentTracking.observer.Observer
+
+object TrackingSimulator : Subject {
     private val shipments = mutableMapOf<String, Shipment>()
-    private val observers = mutableListOf<(Shipment) -> Unit>()
+    private val observers = mutableListOf<Observer>()
 
-    override fun addObserver(observer: (Shipment) -> Unit) {
+    override fun addObserver(observer: Observer) {
         observers.add(observer)
     }
 
-    override fun removeObserver(observer: (Shipment) -> Unit) {
+    override fun removeObserver(observer: Observer) {
         observers.remove(observer)
     }
 
     override fun notifyObservers() {
-        observers.forEach {
-            observer -> shipments.values.forEach {
-                observer.update(it)
-            }
-        }
+        observers.forEach { observer -> shipments.values.forEach { observer.update(it) } }
     }
 
     fun processUpdate(update: String) {
-        val parts = update.split("'")
+        val parts = update.split(",")
         val type = UpdateType.valueOf(parts[0].uppercase())
         val id = parts[1]
         val timestamp = parts[2].toLong()
@@ -32,7 +33,7 @@ object TrackingSimulator {
             UpdateType.SHIPPED -> shipShipment(id, timestamp, otherInfo[0].toLong())
             UpdateType.LOCATION -> updateLocation(id, timestamp, otherInfo[0])
             UpdateType.DELIVERED -> deliverShipment(id, timestamp)
-            UpdateType.DELAYED -> delayShipment(id, timestamp, otherInfo[0].tolong())
+            UpdateType.DELAYED -> delayShipment(id, timestamp, otherInfo[0].toLong())
             UpdateType.LOST -> loseShipment(id, timestamp)
             UpdateType.CANCELED -> cancelShipment(id, timestamp)
             UpdateType.NOTEADDED -> addNoteToShipment(id, timestamp, otherInfo[0])
@@ -50,7 +51,7 @@ object TrackingSimulator {
         shipment?.let {
             it.status = "Shipped"
             it.expectedDelivery = expectedDelivery
-            it.updates.add("Shippment went from Created to Shipped on $timestamp")
+            it.updates.add("Shipment went from Created to Shipped on $timestamp")
             notifyObservers(it)
         }
     }
@@ -68,7 +69,7 @@ object TrackingSimulator {
         val shipment = shipments[id]
         shipment?.let {
             it.status = "Delivered"
-            it.updates.add("Shipping arrived at $timestamp")
+            it.updates.add("Shipment delivered on $timestamp")
             notifyObservers(it)
         }
     }
@@ -78,7 +79,16 @@ object TrackingSimulator {
         shipment?.let {
             it.status = "Delayed"
             it.expectedDelivery = newExpectedDelivery
-            it.updates.add("Shipping delayed on $timestamp, new expected delivery on $newExpectedDelivery")
+            it.updates.add("Shipment delayed on $timestamp, new expected delivery is $newExpectedDelivery")
+            notifyObservers(it)
+        }
+    }
+
+    private fun loseShipment(id: String, timestamp: Long) {
+        val shipment = shipments[id]
+        shipment?.let {
+            it.status = "Lost"
+            it.updates.add("Shipment lost on $timestamp")
             notifyObservers(it)
         }
     }
@@ -86,8 +96,8 @@ object TrackingSimulator {
     private fun cancelShipment(id: String, timestamp: Long) {
         val shipment = shipments[id]
         shipment?.let {
-            it.status = "Cancelled"
-            it.updates.add("Shipping cancelled on $timestamp")
+            it.status = "Canceled"
+            it.updates.add("Shipment canceled on $timestamp")
             notifyObservers(it)
         }
     }
@@ -106,14 +116,6 @@ object TrackingSimulator {
     }
 
     private fun notifyObservers(shipment: Shipment) {
-        observers.forEach { it(shipment) }
-    }
-
-    fun processUpdate(update: String) {
-        // idk yet
-    }
-
-    fun getShipment(id: String): Shipment? {
-        return shipments[id]
+        observers.forEach { it.update(shipment) }
     }
 }

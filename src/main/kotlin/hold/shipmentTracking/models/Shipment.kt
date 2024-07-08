@@ -1,4 +1,4 @@
-package org.example.hold.ShipmentTracking.models
+package hold.shipmentTracking.models
 
 data class Shipment(
     val id: String,

@@ -1,3 +1,5 @@
+package hold.shipmentTracking.view
+
 class UserInterface {
     private val viewHelper = TrackerViewHelper()
 

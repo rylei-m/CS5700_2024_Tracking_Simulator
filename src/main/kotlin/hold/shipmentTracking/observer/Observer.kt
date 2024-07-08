@@ -1,6 +1,6 @@
-package org.example.hold.ShipmentTracking.observer
+package hold.shipmentTracking.observer
 
-import org.example.hold.ShipmentTracking.models.Shipment
+import hold.shipmentTracking.models.Shipment
 
 interface Observer {
     fun update(shipment: Shipment)

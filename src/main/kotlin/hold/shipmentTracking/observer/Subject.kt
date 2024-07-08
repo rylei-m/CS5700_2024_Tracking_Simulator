@@ -1,4 +1,4 @@
-package org.example.hold.ShipmentTracking.observer
+package hold.shipmentTracking.observer
 
 interface Subject {
     fun addObserver(observer: Observer)

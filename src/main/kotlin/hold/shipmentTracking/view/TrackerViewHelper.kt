@@ -1,3 +1,9 @@
+package hold.shipmentTracking.view
+
+import hold.shipmentTracking.models.Shipment
+import hold.shipmentTracking.observer.Observer
+import hold.shipmentTracking.simulator.TrackingSimulator
+
 class TrackerViewHelper : Observer {
     private val trackedShipments = mutableMapOf<String, Shipment>()
 
