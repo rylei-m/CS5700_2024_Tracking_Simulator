@@ -1,13 +1,23 @@
+import org.example.Shipment
+
 object TrackingSimulator {
     private val shipments = mutableMapOf<String, Shipment>()
     private val observers = mutableListOf<(Shipment) -> Unit>()
 
-    fun addObserver(observer: (Shipment) -> Unit) {
+    override fun addObserver(observer: (Shipment) -> Unit) {
         observers.add(observer)
     }
 
-    fun removeObserver(observer: (Shipment) -> Unit) {
+    override fun removeObserver(observer: (Shipment) -> Unit) {
         observers.remove(observer)
+    }
+
+    override fun notifyObservers() {
+        observers.forEach {
+            observer -> shipments.values.forEach {
+                observer.update(it)
+            }
+        }
     }
 
     fun processUpdate(update: String) {
@@ -44,6 +54,57 @@ object TrackingSimulator {
             notifyObservers(it)
         }
     }
+
+    private fun updateLocation(id: String, timestamp: Long, location: String) {
+        val shipment = shipments[id]
+        shipment?.let {
+            it.location = location
+            it.updates.add("Shipment arrived at $location on $timestamp")
+            notifyObservers(it)
+        }
+    }
+
+    private fun deliverShipment(id: String, timestamp: Long) {
+        val shipment = shipments[id]
+        shipment?.let {
+            it.status = "Delivered"
+            it.updates.add("Shipping arrived at $timestamp")
+            notifyObservers(it)
+        }
+    }
+
+    private fun delayShipment(id: String, timestamp: Long, newExpectedDelivery: Long) {
+        val shipment = shipments[id]
+        shipment?.let {
+            it.status = "Delayed"
+            it.expectedDelivery = newExpectedDelivery
+            it.updates.add("Shipping delayed on $timestamp, new expected delivery on $newExpectedDelivery")
+            notifyObservers(it)
+        }
+    }
+
+    private fun cancelShipment(id: String, timestamp: Long) {
+        val shipment = shipments[id]
+        shipment?.let {
+            it.status = "Cancelled"
+            it.updates.add("Shipping cancelled on $timestamp")
+            notifyObservers(it)
+        }
+    }
+
+    private fun addNoteToShipment(id: String, timestamp: Long, note: String) {
+        val shipment = shipments[id]
+        shipment?.let {
+            it.notes.add(note)
+            it.updates.add("Note added on $timestamp: $note")
+            notifyObservers(it)
+        }
+    }
+
+    fun getShipment(id: String): Shipment? {
+        return shipments[id]
+    }
+
     private fun notifyObservers(shipment: Shipment) {
         observers.forEach { it(shipment) }
     }
