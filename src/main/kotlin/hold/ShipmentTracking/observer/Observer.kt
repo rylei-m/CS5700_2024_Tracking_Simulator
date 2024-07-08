@@ -1,4 +1,7 @@
 package org.example.hold.ShipmentTracking.observer
 
-class Observer {
+import org.example.hold.ShipmentTracking.models.Shipment
+
+interface Observer {
+    fun update(shipment: Shipment)
 }
