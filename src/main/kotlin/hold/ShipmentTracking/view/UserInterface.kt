@@ -8,4 +8,8 @@ class UserInterface {
     fun trackShipment(id: String) {
         viewHelper.trackShipment(id)
     }
+
+    fun stopTrackingShipment(id: String) {
+        viewHelper.stopTrackingShipment(id)
+    }
 }
