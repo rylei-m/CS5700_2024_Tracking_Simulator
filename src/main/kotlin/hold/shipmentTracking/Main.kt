@@ -1,4 +1,4 @@
-import UserInterface
+import hold.shipmentTracking.view.UserInterface
 
 fun Main() {
     val ui = UserInterface()
