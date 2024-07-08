@@ -1,6 +1,8 @@
+package hold.shipmentTracking
+
 import hold.shipmentTracking.view.UserInterface
 
-fun Main() {
+fun main() {
     val ui = UserInterface()
     ui.start()
 }

@@ -1,4 +1,4 @@
-package org.example.hold.ShipmentTracking.simulator
+package hold.shipmentTracking.simulator
 
 import hold.shipmentTracking.enums.UpdateType
 import hold.shipmentTracking.models.Shipment
