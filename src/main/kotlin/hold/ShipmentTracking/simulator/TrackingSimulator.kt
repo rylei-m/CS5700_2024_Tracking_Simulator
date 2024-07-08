@@ -25,7 +25,7 @@ object TrackingSimulator {
         val type = UpdateType.valueOf(parts[0].uppercase())
         val id = parts[1]
         val timestamp = parts[2].toLong()
-        val otherInfor = if (parts.size > 3) parts.subList(3, parts.size) else emptyList()
+        val otherInfo = if (parts.size > 3) parts.subList(3, parts.size) else emptyList()
 
         when (type) {
             UpdateType.CREATED -> createShipment(id, timestamp)
