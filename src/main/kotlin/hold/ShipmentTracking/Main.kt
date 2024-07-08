@@ -1,6 +1,6 @@
 import UserInterface
 
-class Main {
+fun Main() {
     val ui = UserInterface()
     ui.start()
 }
